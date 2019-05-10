@@ -4,6 +4,7 @@ import LocationColumn from './components/LocationColumn';
 import loadScript from './helpers/loadScript';
 import { makeRequest, API_KEY, BASE_URL, DATA_FROM_SERVER } from './helpers/api';
 import sort from './helpers/sort';
+import transformData from './helpers/transformData';
 
 class App extends Component {
 
@@ -42,7 +43,7 @@ class App extends Component {
       
     })
     .catch(error => console.warn(error));
-}
+  }
 
   //add cities to country arrays
   addCitiesToCountries = () => {
@@ -58,7 +59,6 @@ class App extends Component {
 
   sortCountries = () => {
     const { collection } = this.state;
-
     const sortedCountries = sort(collection, 'countries');
 
     this.setState({
@@ -110,96 +110,16 @@ class App extends Component {
     }), () => {
       this.getCoords(this.state.address);
     });
-
   }
 
   getCoords = ({ country, city, street }) => {
-
     console.log(country,city,street);
 
     if (street.includes('\'')) {
       street = street.replace(/\'/, '');
     }
 
-    let houseNumber;
-    let newStreet;
-    let newCity;
-
-    switch(country) {
-      case 'USA': 
-      case 'Canada':
-      case 'Ireland':
-        houseNumber = parseInt(street) || "";
-        newStreet = street.replace(/^[ 0-9]+(-\s)?/g, '')
-        .replace(/\sSuite\s\d+(\w)?/, '')
-        .replace(/Way/,"St")
-        .replace(/Jefferson/, "SW Jefferson")
-        .replace(/Dr./,"Rd. NW")
-        .replace(/City Center Plaza 516 Main/,"516 E Main")
-        .split(" ").join('+');
-        newCity = city.replace(/\s/g, "+")
-        .replace(/Elgin/, "South Elgin");
-        break;
-
-      case 'Germany': 
-      case 'Brazil':
-      case 'Mexico':
-      case 'Spain':
-      case 'Argentina':
-      case 'Italy':
-      case 'Sweden':
-      case 'Austria':
-      case 'Switzerland':
-      case 'Portugal':
-      case 'Belgium':
-      case 'Denmark':
-      case 'Finland':
-      case 'Norway':
-      case 'Poland':
-        houseNumber = street.replace(/[A-Za-z\.\sßíóàêçñäúÅæ\/\,]+/, '');
-        newStreet = street.replace(/\s\s+/g," ")
-        .replace(/\//,"")
-        .replace(/\,?\s\d+$/, '')
-        .replace(/Platz/,'Str')
-        .replace(/Provinciale/, "Provinciale Sud")
-        .replace(/Bianco/, "Bianco Moncalieri")
-        .replace(/Grenzacherweg/, "")
-        .replace(/Estrada/, "Tv.")
-        .replace(/Rua do Mercado/, "Alameda do Mercado")
-        .split(" ").join('+');
-        newCity = city.replace(/\s/g, "+")
-        .replace(/Münster/,'Bocholt')
-        .replace(/Å/, "Aa");;
-        break;
-
-      case 'France':
-      case 'UK':
-        houseNumber = parseInt(street) || "";
-        newStreet = street.replace(/\s\s+/g," ")
-        .replace(/^[ 0-9,]+(\s)?/g, '')
-        .replace(/-/,"+")
-        .split(" ").join("+");
-        newCity = city.replace(/\s/g, "+");
-        break;
-
-      case 'Venezuela':
-        houseNumber = parseInt(street) ||street.match(/\d+/)[0] || "";
-        newStreet = street.replace(/\s\s+/g," ")
-        .replace(/\d+ª?\s/, "")
-        .replace(/\s#\d+-\d+/, "")
-        .replace(/Carrera con\s/, "")
-        .split(" ").join('+');
-        newCity = city.replace(/\s/g, "+");
-        break;
-
-      default: 
-        houseNumber = houseNumber = parseInt(street) || street.match(/\d+$/)[0] || "";
-        newStreet = street.replace(/\s\s+/g," ")
-        .split(" ").join('+');
-        newCity = city.replace(/\s/g, "+");
-        break;
-    }
-
+    const { houseNumber, newStreet, newCity } = transformData(country, city, street);
     const url = `${BASE_URL}${houseNumber}+${newStreet}+${newCity}+${country}&key=${API_KEY}`;
         
     makeRequest(url)
