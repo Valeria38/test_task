@@ -7,23 +7,31 @@
 }
 .App {
   display: flex;
-  width: 1200px;
-  height:400px;
-  /* text-align: center; */
-  margin:20px;
+  width: 74%;
+  height:440px;
+  margin:20px auto;
   border:1px solid #fff;
   border-radius: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, .5);
 }
 #map {
-  width: 35vw;
-  height: 55vh;
+  width: 100%;
+  height: 100%;
+}
+.map__display {
+  width:100%;
+  height:100%;
+  padding: 0 15px 5px;
+  box-sizing: border-box;
+}
+.map {
+  width: 50%;
+  height: 88%;
 }
 .location {
-  /* border: 1px solid silver; */
-  width: 20%;
+  width: 26%;
 }
-.location__title {
+.location__title, .map__title {
   border-bottom: 1px solid #333;
   font-weight: bold;
   padding: 10px;
@@ -31,14 +39,16 @@
 }
 .location__items {
   width: 100%;
-  height: 89%;
-  /* overflow: hidden; */
+  height: 90.4%;
   overflow-y: scroll;
 }
 .location__loading {
   width: 100%;
   height: 89%;
+  color: rgb(53, 116, 252);
   overflow-y: scroll;
+  padding: 15px;
+  box-sizing: border-box;
 }
 .location__item {
   width: 99%;
@@ -50,6 +60,9 @@
   font-size: 1.05rem;
   cursor: pointer;
   border-radius: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .location__item:hover {
   background: rgba(194, 194, 194, .3);
