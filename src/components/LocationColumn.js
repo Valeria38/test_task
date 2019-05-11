@@ -1,21 +1,30 @@
-import React, { Component } from 'react';
-const uniqid = require('uniqid');
+import React, { Component } from "react";
+const uniqid = require("uniqid");
 
 class LocationColumn extends Component {
   state = {
-    active: [],
+    active: []
   };
 
   addClass = (index, element) => {
-    const { showDetails, data } = this.props;
+    const { showDetails, data, title } = this.props;
     const newItems = Array(data.length).fill(false);
     const oldIndex = newItems[index];
     newItems[index] = !oldIndex;
+    this.setState(
+      {
+        active: newItems
+      },
+      () => {
+        showDetails(element);
+      }
+    );
+  };
+
+  removeClasses = element => {
+    const { title, showDetails } = this.props;
     this.setState({
-      active: newItems,
-    },
-    () => {
-      showDetails(element);
+      active: []
     });
   };
 
@@ -31,9 +40,7 @@ class LocationColumn extends Component {
             {data.map((element, index) => (
               <li
                 className={
-                  active[index]
-                  ? 'location__item active'
-                  : 'location__item'
+                  active[index] ? "location__item active" : "location__item"
                 }
                 onClick={() => {
                   this.addClass(index, element);
@@ -44,10 +51,10 @@ class LocationColumn extends Component {
               </li>
             ))}
           </ul>
-        ) : (title === 'Countries') ? (
+        ) : title === "Countries" ? (
           <div className="location__loading">Loading...</div>
         ) : (
-          <div className="location__loading"></div>
+          <div className="location__loading" />
         )}
       </div>
     );

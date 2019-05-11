@@ -5,4 +5,4 @@ export default function loadScript(url) {
   script.async = true;
   script.defer = true;
   index.parentNode.insertBefore(script, index);
-};
+}
